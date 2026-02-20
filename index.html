@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16423c">
+  <title>Ore Interventi</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <button id="backBtn" class="ghost-btn" type="button" hidden>Indietro</button>
+      <div class="brand">
+        <h1 id="screenTitle">Ore Interventi</h1>
+        <p id="screenSubtitle">Gestione ore per cliente</p>
+      </div>
+    </header>
+
+    <section id="screen-home" class="screen is-active">
+      <div class="hero">
+        <p class="hero-kicker">PWA locale veloce</p>
+        <h2>Seleziona un'azione</h2>
+      </div>
+      <div class="home-grid">
+        <button class="tile-btn" id="goClients" type="button">
+          <strong>Clienti</strong>
+          <span>Apri elenco clienti e interventi</span>
+        </button>
+        <button class="tile-btn" id="goNewIntervention" type="button">
+          <strong>Nuovo intervento</strong>
+          <span>Registra data, orari e descrizione</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-clients" class="screen">
+      <div class="panel">
+        <label class="field">
+          <span>Cerca cliente</span>
+          <input id="clientSearch" type="search" placeholder="Nome cliente">
+        </label>
+      </div>
+      <div id="clientsList" class="list"></div>
+    </section>
+
+    <section id="screen-new" class="screen">
+      <form id="interventionForm" class="panel form-grid" autocomplete="off">
+        <label class="field">
+          <span>Cliente</span>
+          <input id="clientInput" list="clientsDatalist" placeholder="Seleziona o scrivi nuovo cliente" required>
+          <datalist id="clientsDatalist"></datalist>
+        </label>
+
+        <div class="two-cols">
+          <label class="field">
+            <span>Data</span>
+            <input id="dateInput" type="date" required>
+          </label>
+          <label class="field">
+            <span>Ora inizio</span>
+            <input id="startInput" type="time" required>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Ora fine</span>
+          <input id="endInput" type="time" required>
+        </label>
+
+        <label class="field">
+          <span>Descrizione intervento</span>
+          <textarea id="descInput" rows="3" maxlength="220" placeholder="Breve descrizione"></textarea>
+        </label>
+
+        <div class="actions">
+          <button id="saveInterventionBtn" class="primary-btn" type="submit">Salva intervento</button>
+          <button id="cancelEditBtn" class="ghost-btn" type="button" hidden>Annulla modifica</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="screen-client-detail" class="screen">
+      <div class="panel">
+        <h2 id="detailClientName">Cliente</h2>
+        <label class="field field-inline">
+          <span>Tariffa oraria cliente (€ / h)</span>
+          <input id="clientRateInput" type="number" min="0" step="0.5" inputmode="decimal" placeholder="Es. 40">
+        </label>
+        <div class="totals-grid">
+          <article>
+            <span>Non pagati</span>
+            <strong id="totalUnpaid">0h 00m</strong>
+            <small id="totalUnpaidAmount" class="amount-line">€ 0,00</small>
+          </article>
+          <article>
+            <span>Selezionati per pagamento</span>
+            <strong id="totalSelected">0h 00m</strong>
+            <small id="totalSelectedAmount" class="amount-line">€ 0,00</small>
+          </article>
+        </div>
+        <div class="actions">
+          <button id="toggleAllBtn" class="ghost-btn" type="button">Visualizza tutti gli interventi</button>
+          <button id="markSelectedPaidBtn" class="ghost-btn" type="button">Segna selezionati come pagati</button>
+        </div>
+      </div>
+
+      <div id="detailList" class="list"></div>
+    </section>
+  </main>
+
+  <template id="clientRowTpl">
+    <article class="list-row client-row">
+      <div>
+        <strong class="client-name"></strong>
+        <small class="client-meta"></small>
+      </div>
+      <div class="client-actions">
+        <button class="ghost-btn open-client-btn" type="button">Apri</button>
+        <button class="ghost-btn danger-btn delete-client-btn" type="button">Elimina</button>
+      </div>
+    </article>
+  </template>
+
+  <template id="interventionRowTpl">
+    <article class="list-row intervention-row">
+      <div class="int-head">
+        <strong class="int-date"></strong>
+        <span class="badge status-badge"></span>
+      </div>
+      <p class="int-time"></p>
+      <p class="int-desc"></p>
+      <p class="int-paid-at" hidden></p>
+      <div class="int-actions">
+        <button class="ghost-btn toggle-select-btn" type="button"></button>
+        <button class="ghost-btn mark-paid-btn" type="button">Segna pagato</button>
+        <button class="ghost-btn edit-int-btn" type="button">Modifica</button>
+        <button class="ghost-btn danger-btn delete-int-btn" type="button">Elimina</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
