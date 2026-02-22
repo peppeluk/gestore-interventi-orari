@@ -11,6 +11,7 @@ let currentClientId = null;
 let currentClientFilter = "";
 let detailShowAll = false;
 let editingInterventionId = null;
+let menuCloseTimer = null;
 
 const refs = {};
 
@@ -32,6 +33,7 @@ function bindRefs() {
   refs.goNewIntervention = document.getElementById("goNewIntervention");
   refs.menuBtn = document.getElementById("menuBtn");
   refs.appMenu = document.getElementById("appMenu");
+  refs.menuHomeBtn = document.getElementById("menuHomeBtn");
   refs.menuClientsBtn = document.getElementById("menuClientsBtn");
   refs.menuNewInterventionBtn = document.getElementById("menuNewInterventionBtn");
 
@@ -67,6 +69,7 @@ function bindEvents() {
   refs.goClients.addEventListener("click", goToClients);
   refs.goNewIntervention.addEventListener("click", goToNewIntervention);
   refs.menuBtn.addEventListener("click", onToggleMenu);
+  refs.menuHomeBtn.addEventListener("click", goToHome);
   refs.menuClientsBtn.addEventListener("click", goToClients);
   refs.menuNewInterventionBtn.addEventListener("click", goToNewIntervention);
 
@@ -188,24 +191,58 @@ function goToNewIntervention() {
   navigateTo("new");
 }
 
+function goToHome() {
+  navigateTo("home");
+}
+
 function onToggleMenu() {
   if (refs.appMenu.hidden) {
-    refs.appMenu.hidden = false;
-    refs.menuBtn.setAttribute("aria-expanded", "true");
+    openMenu();
     return;
   }
   closeMenu();
 }
 
+function openMenu() {
+  if (!refs.appMenu || !refs.menuBtn) return;
+  if (menuCloseTimer) {
+    clearTimeout(menuCloseTimer);
+    menuCloseTimer = null;
+  }
+
+  refs.appMenu.hidden = false;
+  refs.menuBtn.setAttribute("aria-expanded", "true");
+
+  requestAnimationFrame(() => {
+    refs.appMenu.classList.add("is-open");
+  });
+}
+
 function closeMenu() {
-  if (!refs.appMenu || refs.appMenu.hidden) {
-    if (refs.menuBtn) {
-      refs.menuBtn.setAttribute("aria-expanded", "false");
-    }
+  if (!refs.appMenu) {
     return;
   }
-  refs.appMenu.hidden = true;
-  refs.menuBtn.setAttribute("aria-expanded", "false");
+
+  if (refs.menuBtn) {
+    refs.menuBtn.setAttribute("aria-expanded", "false");
+  }
+
+  if (refs.appMenu.hidden) {
+    refs.appMenu.classList.remove("is-open");
+    return;
+  }
+
+  refs.appMenu.classList.remove("is-open");
+
+  if (menuCloseTimer) {
+    clearTimeout(menuCloseTimer);
+  }
+  menuCloseTimer = setTimeout(() => {
+    if (!refs.appMenu.classList.contains("is-open")) {
+      refs.appMenu.hidden = true;
+    }
+    menuCloseTimer = null;
+  }, 170);
 }
 
 function onBack() {
