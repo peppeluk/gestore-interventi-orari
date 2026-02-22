@@ -1,22 +1,38 @@
-# Ore Interventi PWA
+# Gestore Interventi Orari
 
-Mini app PWA locale per registrare interventi cliente e stato pagamento.
+App web statica (PWA) per registrare ore di intervento per cliente, con stato pagamenti e dati salvati in `localStorage`.
 
-## Avvio rapido
+## Requisiti
 
-1. Avvia un server statico nella cartella `ore-interventi-pwa`.
-2. Apri `http://localhost:PORT`.
-3. Installa la PWA dal browser (opzionale).
+- Node.js 18+ (consigliato)
+- Account Vercel (solo per deploy cloud)
 
-Esempio con Node:
+## Avvio locale
 
 ```bash
-npx serve .
+npm run dev
 ```
 
-## Funzioni
+L'app viene servita in locale tramite server statico.
 
-- Home con due azioni: `Clienti` e `Nuovo intervento`
-- Nuovo intervento: cliente (con suggerimenti), data, ora inizio/fine, descrizione
-- Scheda cliente: solo interventi non pagati, selezione per pagamento, totale ore
-- Stato locale in `localStorage` (offline-first)
+## Deploy su Vercel
+
+1. Collega il repository al progetto su Vercel.
+2. Imposta framework: `Other`.
+3. Build command: lascia vuoto.
+4. Output directory: lascia vuoto (root).
+5. Deploy.
+
+In alternativa da CLI:
+
+```bash
+npm run deploy:prod
+```
+
+## Funzionalita principali
+
+- Home con `Clienti` e `Nuovo intervento`
+- Inserimento intervento con cliente, data, ora inizio/fine e descrizione
+- Dettaglio cliente con interventi non pagati, selezione e chiusura pagamento
+- Tariffa oraria per cliente e totale importi
+- Supporto offline via Service Worker

@@ -1,0 +1,11 @@
+{
+  "name": "gestore-interventi-orari",
+  "private": true,
+  "version": "1.0.0",
+  "description": "PWA statica per registrare ore interventi cliente",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve .",
+    "deploy:prod": "npx vercel --prod"
+  }
+}

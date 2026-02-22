@@ -30,6 +30,10 @@ function bindRefs() {
   refs.screenSubtitle = document.getElementById("screenSubtitle");
   refs.goClients = document.getElementById("goClients");
   refs.goNewIntervention = document.getElementById("goNewIntervention");
+  refs.menuBtn = document.getElementById("menuBtn");
+  refs.appMenu = document.getElementById("appMenu");
+  refs.menuClientsBtn = document.getElementById("menuClientsBtn");
+  refs.menuNewInterventionBtn = document.getElementById("menuNewInterventionBtn");
 
   refs.clientSearch = document.getElementById("clientSearch");
   refs.clientsList = document.getElementById("clientsList");
@@ -60,10 +64,22 @@ function bindRefs() {
 
 function bindEvents() {
   refs.backBtn.addEventListener("click", onBack);
-  refs.goClients.addEventListener("click", () => navigateTo("clients"));
-  refs.goNewIntervention.addEventListener("click", () => {
-    prepareNewForm();
-    navigateTo("new");
+  refs.goClients.addEventListener("click", goToClients);
+  refs.goNewIntervention.addEventListener("click", goToNewIntervention);
+  refs.menuBtn.addEventListener("click", onToggleMenu);
+  refs.menuClientsBtn.addEventListener("click", goToClients);
+  refs.menuNewInterventionBtn.addEventListener("click", goToNewIntervention);
+
+  document.addEventListener("click", evt => {
+    if (refs.appMenu.hidden) return;
+    if (evt.target.closest(".topbar-actions")) return;
+    closeMenu();
+  });
+
+  document.addEventListener("keydown", evt => {
+    if (evt.key === "Escape") {
+      closeMenu();
+    }
   });
 
   refs.clientSearch.addEventListener("input", evt => {
@@ -144,6 +160,7 @@ function bindEvents() {
 }
 
 function navigateTo(screen, options = {}) {
+  closeMenu();
   const { push = true } = options;
   if (push && currentScreen) {
     navStack.push({ screen: currentScreen, clientId: currentClientId });
@@ -160,6 +177,35 @@ function navigateTo(screen, options = {}) {
   } else if (screen === "client-detail") {
     renderClientDetail();
   }
+}
+
+function goToClients() {
+  navigateTo("clients");
+}
+
+function goToNewIntervention() {
+  prepareNewForm();
+  navigateTo("new");
+}
+
+function onToggleMenu() {
+  if (refs.appMenu.hidden) {
+    refs.appMenu.hidden = false;
+    refs.menuBtn.setAttribute("aria-expanded", "true");
+    return;
+  }
+  closeMenu();
+}
+
+function closeMenu() {
+  if (!refs.appMenu || refs.appMenu.hidden) {
+    if (refs.menuBtn) {
+      refs.menuBtn.setAttribute("aria-expanded", "false");
+    }
+    return;
+  }
+  refs.appMenu.hidden = true;
+  refs.menuBtn.setAttribute("aria-expanded", "false");
 }
 
 function onBack() {
