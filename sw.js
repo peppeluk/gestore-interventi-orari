@@ -1,4 +1,4 @@
-const CACHE_NAME = "ore-interventi-cache-v6";
+const CACHE_NAME = "ore-interventi-cache-v7";
 const CORE_ASSETS = [
   "./",
   "./index.html",

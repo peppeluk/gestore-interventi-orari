@@ -849,7 +849,39 @@ function saveState() {
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
+
+  if (isLocalHost()) {
+    unregisterLocalServiceWorkers();
+    return;
+  }
+
   navigator.serviceWorker.register("sw.js").catch(error => {
     console.warn("Service Worker non registrato:", error);
   });
+}
+
+function isLocalHost() {
+  const host = window.location.hostname;
+  return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+}
+
+function unregisterLocalServiceWorkers() {
+  navigator.serviceWorker.getRegistrations()
+    .then(registrations => Promise.all(registrations.map(reg => reg.unregister())))
+    .catch(error => {
+      console.warn("Errore durante unregister Service Worker locale:", error);
+    });
+
+  if (!("caches" in window)) return;
+  caches.keys()
+    .then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key.startsWith("ore-interventi-cache-"))
+          .map(key => caches.delete(key))
+      )
+    )
+    .catch(error => {
+      console.warn("Errore durante pulizia cache locale:", error);
+    });
 }
