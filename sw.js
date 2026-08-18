@@ -39,6 +39,10 @@ self.addEventListener("fetch", event => {
 
 self.addEventListener("message", event => {
   if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
+    self.skipWaiting().then(() => {
+      self.clients.matchAll().then(clients => {
+        clients.forEach(client => client.navigate(client.url));
+      });
+    });
   }
 });
