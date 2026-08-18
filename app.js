@@ -914,7 +914,9 @@ function showUpdateBanner(sw) {
   if (!banner || !btn) return;
   banner.hidden = false;
   btn.onclick = () => {
+    banner.hidden = true;
     sw.postMessage({ type: "SKIP_WAITING" });
+    setTimeout(() => window.location.reload(), 1000);
   };
 }
 
