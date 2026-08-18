@@ -883,9 +883,39 @@ function registerServiceWorker() {
     return;
   }
 
-  navigator.serviceWorker.register("sw.js").catch(error => {
+  navigator.serviceWorker.register("sw.js").then(reg => {
+    if (reg.waiting) {
+      showUpdateBanner(reg.waiting);
+    }
+    reg.addEventListener("updatefound", () => {
+      const newSw = reg.installing;
+      newSw.addEventListener("statechange", () => {
+        if (newSw.state === "installed" && navigator.serviceWorker.controller) {
+          showUpdateBanner(newSw);
+        }
+      });
+    });
+  }).catch(error => {
     console.warn("Service Worker non registrato:", error);
   });
+
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
+  });
+}
+
+function showUpdateBanner(sw) {
+  const banner = document.getElementById("updateBanner");
+  const btn = document.getElementById("updateBtn");
+  if (!banner || !btn) return;
+  banner.hidden = false;
+  btn.onclick = () => {
+    sw.postMessage({ type: "SKIP_WAITING" });
+  };
 }
 
 function isLocalHost() {

@@ -1,9 +1,10 @@
-const CACHE_NAME = "ore-interventi-cache-v7";
+const CACHE_NAME = "ore-interventi-cache-v8";
 const CORE_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./sheets-sync.js",
   "./manifest.webmanifest",
   "./icons/icon-192.svg",
   "./icons/icon-512.svg"
@@ -34,4 +35,10 @@ self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(cached => cached || fetch(event.request))
   );
+});
+
+self.addEventListener("message", event => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });

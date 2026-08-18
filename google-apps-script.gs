@@ -4,6 +4,7 @@
 // Segui le istruzioni in README_google_sheets.md
 // ============================================================
 
+const SPREADSHEET_ID = "1FVDyZhyviIy9TXK74TWcJesuQY3x2OQK8TeHIIn5pAE";
 const SHEET_NAME = "Dati";
 const HEADERS = [
   "type", "id", "name", "hourlyRate",
@@ -12,7 +13,7 @@ const HEADERS = [
 ];
 
 function getOrCreateSheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);

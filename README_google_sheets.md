@@ -19,7 +19,8 @@ Istruzioni per configurare il backup automatico dei dati su Google Sheets.
 3. Cancella il codice predefinito
 4. Copia il contenuto del file `google-apps-script.gs` di questo progetto
 5. Incolla tutto nel editor
-6. Salva (Ctrl+S)
+6. **Sostituisci** `YOUR_SPREADSHEET_ID_HERE` con l'ID del tuo foglio Google (copiato al Passo 1)
+7. Salva (Ctrl+S)
 
 ## Passo 3: Collegare il foglio allo script
 
@@ -60,5 +61,6 @@ L'app sincronizzerà automaticamente tutti i dati esistenti e futuri.
 ## Troubleshooting
 
 - **"ERR" nell'indicatore**: Verifica che l'URL del Web App sia corretto
+- **"Cannot read properties of null"**: Assicurati di aver inserito l'ID del foglio nella costante `SPREADSHEET_ID` nel codice dello script
 - **Dati non si sincronizzano**: Controlla che il deploy sia "Chiunque" e non "Solo io"
 - **Primo sync lento**: Normale se hai molti dati, impiega qualche secondo
