@@ -1,4 +1,5 @@
-const CACHE_NAME = "ore-interventi-cache-v9";
+const SW_VERSION = "v10";
+const CACHE_NAME = "ore-interventi-cache-" + SW_VERSION;
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -14,6 +15,7 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS))
   );
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
@@ -24,7 +26,9 @@ self.addEventListener("activate", event => {
           .filter(key => key !== CACHE_NAME)
           .map(key => caches.delete(key))
       )
-    )
+    ).then(() => self.clients.matchAll()).then(clients => {
+      clients.forEach(client => client.postMessage({ type: "SW_ACTIVATED", version: SW_VERSION }));
+    })
   );
   self.clients.claim();
 });
@@ -34,14 +38,4 @@ self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(cached => cached || fetch(event.request))
   );
-});
-
-self.addEventListener("message", event => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting().then(() => {
-      self.clients.matchAll().then(clients => {
-        clients.forEach(client => client.navigate(client.url));
-      });
-    });
-  }
 });

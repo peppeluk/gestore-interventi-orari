@@ -883,31 +883,29 @@ function registerServiceWorker() {
     return;
   }
 
-  navigator.serviceWorker.register("sw.js").then(reg => {
-    if (reg.waiting && navigator.serviceWorker.controller) {
-      showUpdateBanner(reg.waiting);
-    }
-    reg.addEventListener("updatefound", () => {
-      const newSw = reg.installing;
-      newSw.addEventListener("statechange", () => {
-        if (newSw.state === "installed" && navigator.serviceWorker.controller) {
-          showUpdateBanner(newSw);
-        }
-      });
-    });
-  }).catch(error => {
+  navigator.serviceWorker.register("sw.js").catch(error => {
     console.warn("Service Worker non registrato:", error);
+  });
+
+  navigator.serviceWorker.addEventListener("message", event => {
+    if (event.data && event.data.type === "SW_ACTIVATED") {
+      const swVersion = event.data.version;
+      const storedVersion = localStorage.getItem("sw_version");
+      if (storedVersion && storedVersion !== swVersion) {
+        showUpdateBanner();
+      }
+      localStorage.setItem("sw_version", swVersion);
+    }
   });
 }
 
-function showUpdateBanner(sw) {
+function showUpdateBanner() {
   const banner = document.getElementById("updateBanner");
   const btn = document.getElementById("updateBtn");
   if (!banner || !btn) return;
   banner.hidden = false;
   btn.onclick = () => {
-    banner.hidden = true;
-    sw.postMessage({ type: "SKIP_WAITING" });
+    window.location.reload();
   };
 }
 
