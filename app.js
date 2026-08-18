@@ -884,7 +884,7 @@ function registerServiceWorker() {
   }
 
   navigator.serviceWorker.register("sw.js").then(reg => {
-    if (reg.waiting) {
+    if (reg.waiting && navigator.serviceWorker.controller) {
       showUpdateBanner(reg.waiting);
     }
     reg.addEventListener("updatefound", () => {
@@ -898,14 +898,6 @@ function registerServiceWorker() {
   }).catch(error => {
     console.warn("Service Worker non registrato:", error);
   });
-
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (!refreshing) {
-      refreshing = true;
-      window.location.reload();
-    }
-  });
 }
 
 function showUpdateBanner(sw) {
@@ -916,7 +908,6 @@ function showUpdateBanner(sw) {
   btn.onclick = () => {
     banner.hidden = true;
     sw.postMessage({ type: "SKIP_WAITING" });
-    setTimeout(() => window.location.reload(), 1000);
   };
 }
 
